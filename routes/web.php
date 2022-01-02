@@ -3,6 +3,9 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Admin\IndexControllers; // lavarel 8 必须 先 引入  
 use App\Http\Controllers\Admin\ArticleController; // lavarel 8 必须 先 引入  
+//引入 LoginController
+use App\Http\Controllers\Admin\LoginController; // lavarel 8 必须 先 引入
+
 use App\Http\Controllers\ViewController;  //ViewController
 
 use App\Http\Controllers\IndexController; // lavarel 8 必须 先 引入 
@@ -20,9 +23,9 @@ use App\Http\Middleware\AdminLogin;
 |
 */
 
-// Route::get('/', function () {
-//     return view('welcome');
-// });
+Route::get('/', function () {
+    return view('welcome');
+});
 
 
 
@@ -32,10 +35,10 @@ use App\Http\Middleware\AdminLogin;
 
 
 
-Route::get('user',['as'=> 'profile', function () {
-    // 通过路由名称生成 URL
-    return '命名 路由my url: ' . route('profile');
-}]) ;
+// Route::get('user',['as'=> 'profile', function () {
+//     // 通过路由名称生成 URL
+//     return '命名 路由my url: ' . route('profile');
+// }]) ;
 
 
 
@@ -52,27 +55,27 @@ Route::get('user',['as'=> 'profile', function () {
 
 
 
-Route::prefix('Admin')->group(function () {                    // 分组后    **区分 大小写
-    //Route::get('login', [IndexControllers::class,'login']);
-    Route::get('index', [IndexControllers::class,'index'])->middleware([AdminLogin::class]); // 调用admin.login中间件  ['middleware' => ['web','admin.login']],
+// Route::prefix('Admin')->group(function () {                    // 分组后    **区分 大小写
+//     //Route::get('login', [IndexControllers::class,'login']);
+//     Route::get('index', [IndexControllers::class,'index'])->middleware([AdminLogin::class]); // 调用admin.login中间件  ['middleware' => ['web','admin.login']],
     
-});//['middleware' => ['admin.login']],
-Route::get('Admin/login', [IndexControllers::class,'login']);//使用 web 可以 操作 session
+// });//['middleware' => ['admin.login']],
+// Route::get('Admin/login', [IndexControllers::class,'login']);//使用 web 可以 操作 session
 
 
 
 
 //资源 路由
-Route::prefix('Admin')->group(function () {                    // 分组后    **区分 大小写
-    Route::resource('article', ArticleController::class);//官网  牛逼 
+// Route::prefix('Admin')->group(function () {                    // 分组后    **区分 大小写
+//     Route::resource('article', ArticleController::class);//官网  牛逼 
     
-});
+// });
 
 
-Route::get('/test', function () {
-    echo 'test11';
-    //
-})->middleware([AdminLogin::class,'web']);
+// Route::get('/test', function () {
+//     echo 'test11';
+//     //
+// })->middleware([AdminLogin::class,'web']);
 
 
  
@@ -82,11 +85,14 @@ Route::get('/test', function () {
      
 //Route::get('/view', [ViewController::class,'index']);//使用 web 可以 操作 session  
 
-Route::get('/view', [ViewController::class,'view']);
-Route::get('/article', [ViewController::class,'article']);
-Route::get('/layouts', [ViewController::class,'layouts']);
+// Route::get('/view', [ViewController::class,'view']);
+// Route::get('/article', [ViewController::class,'article']);
+// Route::get('/layouts', [ViewController::class,'layouts']);
 
+Route::any('admin/login', [LoginController::class,'login']);
+Route::get('admin/code', [LoginController::class,'code']);  //生成 验证码
 
+//Route::get('admin/getcode', [LoginController::class,'getCode']);  //获取 验证码
 
 
 
@@ -171,7 +177,7 @@ Route::get('/layouts', [ViewController::class,'layouts']);
 //     return 'User ' . $id;
 // })->where('id', '[0-9]+');
 
-Route::get(
-    '/',
-    [IndexController::class, 'index']
-);
+// Route::get(
+//     '/',
+//     [IndexController::class, 'index']
+// );
