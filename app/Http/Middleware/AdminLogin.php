@@ -20,8 +20,9 @@ class AdminLogin
         //echo 7788;
         //echo $_SESSION['admin'];  ok
         //$_SESSION['admin'] session('admin');
-        if(!$_SESSION['admin']){
-            return redirect('Admin/login');
+        //session(['user'=>$inputName]);
+        if(!session('user')){//如果 没有 登录
+            return redirect('admin/login');
         }
         return $next($request);
     }

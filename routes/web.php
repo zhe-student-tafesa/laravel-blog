@@ -1,14 +1,14 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\Admin\IndexControllers; // lavarel 8 必须 先 引入  
+use App\Http\Controllers\Admin\IndexController; // lavarel 8 必须 先 引入  
 use App\Http\Controllers\Admin\ArticleController; // lavarel 8 必须 先 引入  
 //引入 LoginController
 use App\Http\Controllers\Admin\LoginController; // lavarel 8 必须 先 引入
 
 use App\Http\Controllers\ViewController;  //ViewController
 
-use App\Http\Controllers\IndexController; // lavarel 8 必须 先 引入 
+//use App\Http\Controllers\IndexController; // lavarel 8 必须 先 引入 
 
 use App\Http\Middleware\AdminLogin;
 
@@ -92,10 +92,21 @@ Route::get('/', function () {
 Route::any('admin/login', [LoginController::class,'login']);
 Route::get('admin/code', [LoginController::class,'code']);  //生成 验证码
 
+
 //Route::get('admin/getcode', [LoginController::class,'getCode']);  //获取 验证码
+//Route::any('admin/crypt', [LoginController::class,'crypt']);
+//////////Route::any('admin/index', [IndexController::class,'index']);// 登陆成功
+//////////Route::any('admin/info', [IndexController::class,'info']);// 登陆成功右侧 iframe模块
 
 
+//admin/login 和 admin/info 使用 中间件 过滤   开始
+Route::get('admin/index', [IndexController::class,'index'])->middleware([AdminLogin::class,'web']);
+Route::get('admin/info', [IndexController::class,'info'])->middleware([AdminLogin::class,'web']);
+Route::any('admin/changepassword', [IndexController::class,'changepassword'])->middleware([AdminLogin::class,'web']);//get post
 
+Route::get('admin/quit', [LoginController::class,'quit'])->middleware([AdminLogin::class,'web']);
+
+//admin/login 和 admin/info 使用 中间件 过滤   结束
 
 
 
