@@ -61,7 +61,7 @@ class IndexController extends Controller
                 
                 //echo 'wrong';
                 //dd($validator->errors()->all());//  打印 错误 原因
-                return back()->withErrors($validator); //  在 页面 打印 错误 原因
+                return back()->withErrors($validator); //  在 页面 打印 错误 原因   //返回 类型为 对象  在 html 输出时 应该使用 if
 
             }else{
                 //echo 'right';
@@ -78,9 +78,9 @@ class IndexController extends Controller
                         ['user_name' => 'admin'],
                          ['user_password' =>(Crypt::encrypt($request->post()["password"])) ]
                         );
-                    return redirect('admin/info');
+                        return back()->with('errors','密码修改成功!');   //密码修改 成功
                 }else{
-                    return back()->with('errors','原密码错误 !');
+                    return back()->with('errors','原密码错误 !');               //返回 类型为 字符串  在 html 输出时 应该使用 if
                 }
 
             }
@@ -92,6 +92,7 @@ class IndexController extends Controller
         
         
     } 
+ 
 }
 
 ?>

@@ -12,6 +12,9 @@ use App\Http\Controllers\ViewController;  //ViewController
 
 use App\Http\Middleware\AdminLogin;
 
+//CategoryController
+use App\Http\Controllers\Admin\CategoryController;
+
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -106,7 +109,10 @@ Route::any('admin/changepassword', [IndexController::class,'changepassword'])->m
 
 Route::get('admin/quit', [LoginController::class,'quit'])->middleware([AdminLogin::class,'web']);
 
+
 //admin/login 和 admin/info 使用 中间件 过滤   结束
+
+
 
 
 
@@ -192,3 +198,8 @@ Route::get('admin/quit', [LoginController::class,'quit'])->middleware([AdminLogi
 //     '/',
 //     [IndexController::class, 'index']
 // );
+//资源 路由
+Route::prefix('admin')->group(function () {                    // 分组后    **区分 大小写
+    Route::resource('category', CategoryController::class)->middleware([AdminLogin::class,'web']);//  增加 中间件
+    Route::post('cate/changeorder', [CategoryController::class,'changeOrder'])->middleware([AdminLogin::class,'web']);//admin/cate/changeorder
+});
