@@ -3,6 +3,8 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Admin\IndexController; // lavarel 8 必须 先 引入  
 use App\Http\Controllers\Admin\ArticleController; // lavarel 8 必须 先 引入  
+use App\Http\Controllers\Admin\ImageController; // lavarel 8 必须 先 引入 
+
 //引入 LoginController
 use App\Http\Controllers\Admin\LoginController; // lavarel 8 必须 先 引入
 
@@ -14,6 +16,7 @@ use App\Http\Middleware\AdminLogin;
 
 //CategoryController
 use App\Http\Controllers\Admin\CategoryController;
+use App\Http\Controllers\Admin\CommonController;
 
 /*
 |--------------------------------------------------------------------------
@@ -203,3 +206,18 @@ Route::prefix('admin')->group(function () {                    // 分组后    *
     Route::resource('category', CategoryController::class)->middleware([AdminLogin::class,'web']);//  增加 中间件
     Route::post('cate/changeorder', [CategoryController::class,'changeOrder'])->middleware([AdminLogin::class,'web']);//admin/cate/changeorder
 });
+
+
+//资源 路由
+Route::prefix('admin')->group(function () {                    // 分组后    **区分 大小写
+    Route::resource('article', ArticleController::class)->middleware([AdminLogin::class,'web']);//  增加 中间件（目的：只有登录了才能访问这些路径）
+    
+});
+
+// 上传 文件
+Route::any('admin/upload', [CommonController::class,'upload'])->middleware([AdminLogin::class,'web']);//get post
+
+// 张哲 试试  文件 上传
+Route::get('admin/uploadimage', [ImageController::class,'upload'])->middleware([AdminLogin::class,'web']);//get post
+//uploadFile 方法
+Route::post('admin/uploadimage', [ImageController::class,'uploadFile'])->name('upload.uploadfile');//get post

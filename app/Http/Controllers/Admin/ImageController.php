@@ -8,21 +8,41 @@ use App\Models\User;
 use Illuminate\View\View;
 use Illuminate\Support\Facades\DB;// 引入 DB 数据库
 use App\Http\Model\Category;
-//Article
-use App\Http\Model\Article;
 use Illuminate\Cache\Events\CacheHit;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Symfony\Component\Console\Input\Input;
 
-class ArticleController extends Controller
+class ImageController extends Controller
 {
+    public function upload(){//           显示 文件 上传 页面
+        echo  view('admin/article/upload');
+    } 
+    public function uploadFile(Request $request){//           显示 文件 上传成功  页面
+         //$request->file->store('public');
+         //$file = $request->file('file');
+         if ($request->file('file')->isValid()) {
+            //
+            $FirstName= $request->post()["FirstName"];// 读取 post 上传的 数据
+            $filename=date('YmdHis').mt_rand(100,999).'.'.$request->file->extension(); //获取 后缀 名
+
+            $path = $request->file->storeAs( 'public', $filename);//保存 文件
+            $filepathDB='storage/app/public/'.$filename;
+            
+   
+           var_dump( $filepathDB); 
+        }
+
+        
+         //echo $path;
+        //return  back();
+    } 
+
+
     //GET|HEAD                               | admin/article 
     public function index(){               //全部文章   列表
-        $data= Article::orderBy('art_id','desc')->paginate(6);  //倒着排，即最新的在上边 
-        ($data->links());// 分页
-        return view('admin/article/index',compact('data')); //index .blade.php
-        //echo 'GET|HEAD                               | admin/article ';
+        //return 'Admin/article的 index';//返回 欢迎 界面
+        echo 'GET|HEAD                               | admin/article ';
         //$categorys = DB::table('category');//  ->where('cate_id', 1)->first()
 
         // $categorys = Category::all();
@@ -46,24 +66,20 @@ class ArticleController extends Controller
         //echo '<h1>Arti登录</h1>';
         if( $request->isMethod('post') ){//如果是 post 提交  Input::all()
            //dd($request->post()) ;  //已经获得了所有 数据
-           $input = $request->post();
-           array_splice($input,0, 1);//把第一个  数据删除
-
-            //dd($input) ;  //已经获得了所有 数据, 马上写入数据库
-             
-            //dd($result) ;
-
-
-            //$cate_order= $request->post()["cate_order"];
+            $cate_pid= $request->post()["cate_pid"];
+            $cate_name= $request->post()["cate_name"];
+            $cate_title= $request->post()["cate_title"];
+            $cate_keywords= $request->post()["cate_keywords"];
+            $cate_description= $request->post()["cate_description"];
+            $cate_order= $request->post()["cate_order"];
             /////////////////////////////////////////////////////////////开始
             $message=[
-                'art_title.required'=>'必须输入文章标题' ,     //数组
-                'art_content.required'=>'必须输入文章内容'
+                'cate_name.required'=>'必须输入分类名称' ,     //数组
+               
             ];
 
             $validator = Validator::make($request->all(), [
-                'art_title' => 'required' ,
-                'art_content' => 'required'
+                'cate_name' => 'required' 
             ],$message);
         
             if ($validator->fails()) {
@@ -71,24 +87,14 @@ class ArticleController extends Controller
                 return back()->withErrors($validator); //  在 页面 打印 错误 原因   //返回 类型为 对象  在 html 输出时 应该使用 if
 
             }else{ // 成功
-                if ($request->file('file')->isValid()) {
-           
-                    $filename=date('YmdHis').mt_rand(100,999).'.'.$request->file->extension(); //获取 后缀 名
-    
-                    $path = $request->file->storeAs( 'public', $filename);//保存 文件
-                    $filepathDB='storage/app/public/'.$filename;
-                }
-                //不能 删除  
-                //array_splice($input,3, 1);//把第4个  数据删除
-                //添加$filepathDB     $arrayname[indexname] = $value;  
-                $input['art_thumb']=$filepathDB;
-                //压入 时间戳
-                $input['art_time']= time();
-
-                $result=Article::create($input);// 写入数据库      public $guarded= [];// 没有需要保护的
-                 
+                $input=$request->post();
+                //( $request->post())::except('_token');
+                array_splice($input,0, 1);
+                //dd($input) ;
+                // 一句话  写入 很多（数组）字段 
+                $result=Category::create($input);// 写入数据库      public $guarded= [];// 没有需要保护的 
                 if($result){//成功 写入数据库
-                    return redirect('admin/article');
+                    return redirect('admin/category');
                 }else{
                     return back()->with('errors','数据保存失败!请重试');
                 }
@@ -128,7 +134,7 @@ class ArticleController extends Controller
 
 
     // GET|HEAD                               | admin/article/{category}/edit | category.edit 
-    public function edit($cate_id){//               编辑/修改 文章
+    public function edit($cate_id){//               编辑/修改 分类
         //echo  $cate_id;
         $data= Category::where('cate_pid',0)->get();
         $field= Category::find($cate_id);
