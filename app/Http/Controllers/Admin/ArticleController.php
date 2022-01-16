@@ -103,9 +103,7 @@ class ArticleController extends Controller
 
     //GET|HEAD                               | admin/article/create 
     public function create(){//             添加文章
-        //获取 父级 分类
-        //echo '<h1>添加文章</h1>';
-        // $data= Category::where('cate_pid',0)->get();
+    
         $data= (new Category())->tree();
          
         return view('admin/article/add',compact('data')); // 使用add.blade.php页面 +返回 数据   
@@ -127,29 +125,35 @@ class ArticleController extends Controller
 
 
 
-    // GET|HEAD                               | admin/article/{category}/edit | category.edit 
-    public function edit($cate_id){//               编辑/修改 文章
-        //echo  $cate_id;
-        $data= Category::where('cate_pid',0)->get();
-        $field= Category::find($cate_id);
+    // GET|HEAD                               | admin/article/{article}/edit | category.edit 
+    public function edit($art_id){//               编辑/修改 文章
+         
+        $data= (new Category())->tree();//  类别
+        
+        $field= Article::find($art_id);
         //dd($field);
-        return view('admin.category.edit',compact('field','data'));//打开编辑页面，且把要修改的原始数据 传过来
+        return view('admin.article.edit',compact('field','data'));//打开编辑页面，且把要修改的原始数据 传过来
     }  
+
+
+
+
     //PUT|PATCH                              | admin/article/{category}      | category.update    有参数
-    public function update($cate_id,Request $request){//         更新 分类
+    public function update($art_id,Request $request){//         更新 文章
         //echo '<h1>Arti登录</h1>';
         //dd(Input::all());
         //dd( $request->post() );
         $input=$request->post();
+
         //( $request->post())::except('_token');
         array_splice($input,0, 2);// 删除"_token"和   "_method"
         //dd( $input );
-        $result= Category::where('cate_id',$cate_id)->update($input);
+        $result= Article::where('art_id',$art_id)->update($input);
         //dd( $result);
         if($result){
-            return redirect('admin/category');
+            return redirect('admin/article');
         }else{
-            return back()->with('errors','数据更新失败!请稍后重试');
+            return back()->with('errors','文章更新失败!请稍后重试');
         }
 
     } 
@@ -185,22 +189,22 @@ class ArticleController extends Controller
             }    
     }
     //DELETE                                 | admin/article/{category}      | category.destroy
-    public function destroy($cate_id){//            删除 单个 分类
+    public function destroy($art_id){//            删除 单个 文章  
             //echo '<h1>Arti登录</h1>';
             //echo $cate_id;
-            $result= Category::where('cate_id',$cate_id)->delete();
+            $result= Article::where('art_id',$art_id)->delete();
             // 如果删除的是父类，则把他的子类 升级为 父类
-            Category::where('cate_pid',$cate_id)->update(['cate_pid'=>0]);
+            //Article::where('cate_pid',$art_id)->update(['cate_pid'=>0]);
 
             if($result){// 返回 json
                 $data=[
                     'status'=> 1, //1 代表 成功
-                    'msg'=>'分类删除成功'
+                    'msg'=>'文章删除成功'
                 ];
             }else{
                 $data=[
                     'status'=> 0, //1 代表 成功
-                    'msg'=>'分类删除失败，请稍后重试'
+                    'msg'=>'文章删除失败，请稍后重试'
                 ];
             }
             return $data; // 返回 到 post/delete 的 回调函数里

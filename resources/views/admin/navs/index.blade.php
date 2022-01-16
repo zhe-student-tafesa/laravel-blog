@@ -4,7 +4,7 @@
     <!--面包屑导航 开始-->
     <div class="crumb_warp">
         <!--<i class="fa fa-bell"></i> 欢迎使用登陆网站后台，建站的首选工具。-->
-        <i class="fa fa-home"></i> <a href="{{url('admin/info')}}">首页</a> &raquo;  分类管理
+        <i class="fa fa-home"></i> <a href="{{url('admin/info')}}">首页</a> &raquo;  自定义导航管理
     </div>
     <!--面包屑导航 结束-->
 
@@ -35,14 +35,14 @@
         <div class="result_wrap">
 
             <div class="result_title">
-                 <h3>全部分类列表</h3>
+                 <h3>自定义导航列表</h3>
             </div>
 
             <!--快捷导航 开始-->
             <div class="result_content">
                 <div class="short_wrap">
-                    <a href="{{url('admin/category/create')}}"><i class="fa fa-plus"></i>添加分类</a>
-                    <a href="{{url('admin/category')}}"><i class="fa fa-recycle"></i>全部分类</a>
+                    <a href="{{url('admin/navs/create')}}"><i class="fa fa-plus"></i>添加自定义导航</a>
+                    <a href="{{url('admin/navs')}}"><i class="fa fa-recycle"></i>全部导航</a>
                 
                 </div>
             </div>
@@ -56,28 +56,33 @@
                         <!-- <th class="tc" width="5%"><input type="checkbox" name=""></th> -->
                         <th class="tc" width="5%"  >排序</th>
                         <th class="tc" width="5%"  >ID</th>
-                        <th>分类名称</th>
-                        <th>标题</th>
-                        <th>查看次数</th>
+                        <th>导航名称</th>
+                        <th>导航别名</th>
+                        <th>导航地址</th>
                        
                         <th>操作</th>
                     </tr>
+
+
+
                     @foreach($data as $v)
                     <tr>
                         <!-- <td class="tc"><input type="checkbox" name="id[]" value="59"></td> -->
                         <td class="tc">
-                            <input type="text" name="ord[]" onchange="changeOrder(this, '{{$v->cate_id}}')" value="{{$v->cate_order}}">
+                            <input type="text" name="ord[]" onchange="changeOrder(this, '{{$v->nav_id}}')" value="{{$v->nav_order}}">
                         </td>
-                        <td class="tc">{{$v->cate_id}}</td>
+                        <td class="tc">{{$v->nav_id}}</td>
                         <td>
-                            <a href="#">{{$v->_cate_name}}</a>
+                            <a href="#">{{$v->nav_name}}</a>
                         </td>
-                        <td>{{$v->cate_title}}</td>
-                        <td>{{$v->cate_view}}</td>
+
+                        <td>{{$v->nav_alias}}</td>
+
+                        <td>{{$v->nav_url}}</td>
                     
                         <td>
-                            <a href="{{url('admin/category/'.$v->cate_id.'/edit')}}">修改</a>
-                            <a href="javascript:;" onclick="deleteOrder({{$v->cate_id}})">删除</a>
+                            <a href="{{url('admin/navs/'.$v->nav_id.'/edit')}}">修改</a>
+                            <a href="javascript:;" onclick="deletNavs({{$v->nav_id}})">删除</a>
                         </td>
                     </tr>
                     @endforeach
@@ -90,11 +95,11 @@
     </form>
     <!--搜索结果页面 列表 结束-->
     <script>
-        function changeOrder(obj, order_id){
-            var cate_order=$(obj).val();
+        function changeOrder(obj, nav_id){
+            var  nav_order=$(obj).val();// 新 的排名
              
-            $.post("{{url('admin/cate/changeorder')}}",
-                    {'_token':'{{csrf_token()}}', 'order_id' : order_id, 'cate_order':cate_order },
+            $.post("{{url('admin/navs/changeorder')}}",
+                    {'_token':'{{csrf_token()}}', 'nav_id' : nav_id, 'nav_order':nav_order },
                     function(data){
                         //console.log(data);
                         if(data.status==1){
@@ -105,15 +110,15 @@
                     });
         }
         //删除
-        function deleteOrder(cate_id){
-            layer.confirm('确定要删除id='+cate_id+' 的分类吗？',{
+        function deletNavs(nav_id){
+            layer.confirm('确定要删除id='+nav_id+' 的自定义导航吗？',{
                 btn:['确定','取消']
             },function(){                      //确定时
-                //alert( cate_id);
+                 
                 //layer.msg('zy',{icon:1});
-
-                //使用  delete 删除（AJAX）  路径，参数，回调函数
-                $.post("{{url('admin/category')}}"+"/"+cate_id,
+                //使用 url('admin/navs')}}"+"/"+nav_id  调用控制器的 destroy方法进行删除
+                //使用  delete方法 删除（AJAX）【  路径，参数，回调函数】
+                $.post("{{url('admin/navs')}}"+"/"+nav_id,
                         {'_method':'delete','_token':"{{csrf_token()}}"},
                         function(data){  //回调函数
                             //console.log(data);

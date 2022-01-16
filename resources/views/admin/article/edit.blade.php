@@ -11,7 +11,7 @@
 <!--结果集标题与导航组件 开始-->
 <div class="result_wrap">
     <div class="result_title">
-        <h3>添加文章</h3>
+        <h3>编辑文章</h3>
         @if( $errors)
         <div class="mark">
             @if( is_object($errors) )
@@ -34,9 +34,12 @@
 </div>
 <!--结果集标题与导航组件 结束-->
 
+<!-- 不能 修改 图片 了 -->
 <div class="result_wrap">
-    <form action="{{url('admin/article')}}" method="POST" enctype="multipart/form-data">
-        {{csrf_field()}}
+    <form action="{{url('admin/article/'.$field->art_id)}}" method="POST" >
+            <input type="hidden" name="_method" value="put"/>
+            {{csrf_field()}}
+         
         <table class="add_tab">
             <tbody>
                 <tr>
@@ -46,7 +49,11 @@
 
                             <!-- _cate_name 字段 是我们后来 自己 加的 -->
                             @foreach($data as $d)
-                            <option value="{{$d->cate_id}}">{{$d->_cate_name}}</option>
+                                <option value="{{$d->cate_id}}"
+                                    @if($field->cate_id== $d->cate_id) selected  @endif
+                                >  
+                                    {{$d->_cate_name}}
+                            </option>
                             @endforeach
 
                         </select>
@@ -58,7 +65,7 @@
                 <tr>
                     <th><i class="require">*</i>文章标题：</th>
                     <td>
-                        <input type="text" class="lg" name="art_title">
+                        <input type="text" class="lg" name="art_title" value="{{$field->art_title }}">
 
                     </td>
                 </tr>
@@ -66,35 +73,36 @@
                 <tr>
                     <th> 编辑</th>
                     <td>
-                        <input type="text" class="sm" name="art_editor">
+                        <input type="text" class="sm" name="art_editor"  value="{{$field->art_editor }}">
 
                     </td>
                 </tr>
 
+
+                <!-- 缩略图 预览 -->
                 <tr>
-                    <th><i class="require">*</i>缩略图：</th>
+                    <th> 
+
+                    </th>
                     <td>
-                        <!-- <input type="text" size="50" name="art_thumb"> -->
-                        <div class="form-group">
-                                <label for="file"> Choose File</label>
-                                <input type="file"  class="form-control" name="file" id="file"/>
-                        </div>
-
-                        
-
+                        <img  alt=""  id="art_thumb_img"   src="/cms/{{$field->art_thumb }} "
+                            style="max-width:350px ;max-height:350px ;"
+                            
+                        >
                     </td>
                 </tr>
+
 
                 <tr>
                     <th>关键词：</th>
                     <td>
-                        <input type="text" class="lg" name="art_tag">
+                        <input type="text" class="lg" name="art_tag"   value="{{$field->art_tag }}">
                     </td>
                 </tr>
                 <tr>
                     <th>描述：</th>
                     <td>
-                        <textarea name="art_description"></textarea>
+                        <textarea name="art_description"> {{$field->art_description }}</textarea>
                     </td>
                 </tr>
 
@@ -108,7 +116,7 @@
                         <!--建议手动加在语言，避免在ie下有时因为加载语言失败导致编辑器加载失败-->
                         <!--这里加载的语言文件会覆盖你在配置项目里添加的语言类型，比如你在配置项目里配置的是英文，这里加载的中文，那最后就是中文-->
                         <script type="text/javascript" charset="utf-8" src="{{asset('resources/org/ueditor/lang/zh-cn/zh-cn.js')}}"></script>
-                        <script id="editor" name="art_content" type="text/plain" style="width:888px;height:500px;"></script>
+                        <script id="editor" name="art_content" type="text/plain" style="width:888px;height:500px;">"{!!$field->art_content !!}"</script>
                         <script type="text/javascript">
                             //实例化编辑器
                             //建议使用工厂方法getEditor创建和引用编辑器实例，如果在某个闭包下引用该编辑器，直接调用UE.getEditor('editor')就能拿到相关的实例

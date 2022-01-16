@@ -17,7 +17,14 @@ use App\Http\Middleware\AdminLogin;
 //CategoryController
 use App\Http\Controllers\Admin\CategoryController;
 use App\Http\Controllers\Admin\CommonController;
+use App\Http\Controllers\Admin\LinksController;
+use App\Http\Controllers\Admin\NavsController;
+//ConfigController
+use App\Http\Controllers\Admin\ConfigController;
 
+
+// 前台IndexHomeController
+use App\Http\Controllers\Home\IndexHomeController;
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -29,9 +36,11 @@ use App\Http\Controllers\Admin\CommonController;
 |
 */
 
-Route::get('/', function () {
-    return view('welcome');
-});
+// Route::get('/', function () {
+//     return view('welcome');
+// });
+//
+
 
 
 
@@ -205,12 +214,35 @@ Route::get('admin/quit', [LoginController::class,'quit'])->middleware([AdminLogi
 Route::prefix('admin')->group(function () {                    // 分组后    **区分 大小写
     Route::resource('category', CategoryController::class)->middleware([AdminLogin::class,'web']);//  增加 中间件
     Route::post('cate/changeorder', [CategoryController::class,'changeOrder'])->middleware([AdminLogin::class,'web']);//admin/cate/changeorder
+    Route::post('links/changeorder', [LinksController::class,'changeOrder'])->middleware([AdminLogin::class,'web']);//admin/links/changeorder 
+    Route::post('navs/changeorder', [NavsController::class,'changeOrder'])->middleware([AdminLogin::class,'web']);//admin/navs/changeorder修改 排名
+    Route::post('config/changeorder', [ConfigController::class,'changeOrder'])->middleware([AdminLogin::class,'web']);//admin/navs/changeorder修改 排名
+    Route::post('config/changecontent', [ConfigController::class,'changeContent'])->middleware([AdminLogin::class,'web']);//admin/config/changecontent 修改 配置 内容
+    Route::get('config/putfile', [ConfigController::class,'putFile'])->middleware([AdminLogin::class,'web']);//admin/config/changecontent 把配置数据写进 config
 });
 
 
 //资源 路由
 Route::prefix('admin')->group(function () {                    // 分组后    **区分 大小写
     Route::resource('article', ArticleController::class)->middleware([AdminLogin::class,'web']);//  增加 中间件（目的：只有登录了才能访问这些路径）
+    
+});
+
+//资源 路由
+Route::prefix('admin')->group(function () {                    // 分组后    **区分 大小写
+    Route::resource('links', LinksController::class)->middleware([AdminLogin::class,'web']);//  增加 中间件（目的：只有登录了才能访问这些路径）
+    
+});
+
+//资源 路由
+Route::prefix('admin')->group(function () {                    // 分组后    **区分 大小写
+    Route::resource('navs', NavsController::class)->middleware([AdminLogin::class,'web']);//  增加 中间件（目的：只有登录了才能访问这些路径）
+    
+});
+
+//资源 路由
+Route::prefix('admin')->group(function () {                    // 分组后    **区分 大小写
+    Route::resource('config', ConfigController::class)->middleware([AdminLogin::class,'web']);//  增加 中间件（目的：只有登录了才能访问这些路径）
     
 });
 
@@ -221,3 +253,10 @@ Route::any('admin/upload', [CommonController::class,'upload'])->middleware([Admi
 Route::get('admin/uploadimage', [ImageController::class,'upload'])->middleware([AdminLogin::class,'web']);//get post
 //uploadFile 方法
 Route::post('admin/uploadimage', [ImageController::class,'uploadFile'])->name('upload.uploadfile');//get post
+
+
+
+//前台 frontend
+Route::get('/', [IndexHomeController::class,'index']);
+Route::get('/category', [IndexHomeController::class,'category']);
+Route::get('/article', [IndexHomeController::class,'article']);

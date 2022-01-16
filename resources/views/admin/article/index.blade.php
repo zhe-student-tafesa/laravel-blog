@@ -1,4 +1,4 @@
-@extends('layouts.admin')
+@extends('layouts.adminarticle')
 @section('content')
 
 
@@ -25,11 +25,11 @@
         </div>
 
         <div class="result_content">
-            <div class="short_wrap">
-                <a href="#"><i class="fa fa-plus"></i>新增文章</a>
-                <a href="#"><i class="fa fa-recycle"></i>批量删除</a>
-                <a href="#"><i class="fa fa-refresh"></i>更新排序</a>
-            </div>
+        <div class="short_wrap">
+            <a href="{{url('admin/article/create')}}"><i class="fa fa-plus"></i>添加文章</a>
+            <a href="{{url('admin/article')}}"><i class="fa fa-recycle"></i>全部文章</a>
+
+        </div>
         </div>
         <!--快捷导航 结束-->
     </div>
@@ -58,8 +58,8 @@
                     <td>{{$v->art_editor}}</td>
                     <td>{{date('Y-m-d',$v->art_time)}}</td>
                      <td>
-                        <a href="#">修改</a>
-                        <a href="#">删除</a>
+                        <a href="{{url('admin/article/'.$v->art_id.'/edit')}}">修改</a>
+                        <a href="javascript:;" onclick="deleteArticle({{$v->art_id}})">删除</a>
                     </td>
                 </tr>
                 @endforeach
@@ -89,4 +89,53 @@
    }
 </style>    
 <!--搜索结果页面 列表 结束-->
+
+
+<script>
+        function changeOrder(obj, order_id){
+            var cate_order=$(obj).val();
+             
+            $.post("{{url('admin/cate/changeorder')}}",
+                    {'_token':'{{csrf_token()}}', 'order_id' : order_id, 'cate_order':cate_order },
+                    function(data){
+                        //console.log(data);
+                        if(data.status==1){
+                            layer.msg(data.msg,{icon: 6});
+                        }else{
+                            layer.msg(data.msg,{icon: 5});
+                        }
+                    });
+        }
+        //删除
+        function deleteArticle(art_id){
+            layer.confirm('确定要删除id='+art_id+' 的文章吗？',{
+                btn:['确定','取消']
+            },function(){                      //确定时
+                //alert( art_id);
+                //layer.msg('zy',{icon:1});
+
+                //使用  delete 删除（AJAX）  路径，参数，回调函数
+                $.post("{{url('admin/article')}}"+"/"+art_id,
+                        {'_method':'delete','_token':"{{csrf_token()}}"},
+                        function(data){  //回调函数
+                            //console.log(data);
+                            if(data.status==1){
+                                //刷新当前页面
+                                location.href= location.href;
+                                layer.msg(data.msg,{icon: 6});
+                            }else{
+                                layer.msg(data.msg,{icon: 5});
+                            }
+                        }
+                );
+            },function(){                      //取消时
+                // layer.msg('yang',{
+                //     time:20000,//20秒后 自动关闭    
+                //     btn:['','']
+                // });
+            }
+            );
+        }
+       
+    </script>
 @endsection
