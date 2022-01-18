@@ -1,5 +1,15 @@
 <?php return array (
   'web_status' => '0',
-  'web_count' => '55',
-  'web_title' => 'houdun',
+  'web_count' => 'Baidu Statistics',
+  'web_title' => 'listen2me',
+  'copyright' => 'Designed by Frank.  <a href="https://au.linkedin.com/in/frank-zhang-developer" target="_blank">Frank\'s Linkedin</a>',
+  'seo_title' => '学习lavarel',
+  'keywords' => 'CV, cover letter, interview, linkedin',
+  'description' => 'Best ways to find a job
+1.Ask your network for referrals. If you are looking for a job, you should tell all your contacts to help them help you find mutual career contacts. ...
+2.Contact companies directly. ...
+3.Use job search platforms. ...
+4.Go to job fairs. ...
+5.Leverage social media. ...
+6.Inquire at staffing agencies.',
 );

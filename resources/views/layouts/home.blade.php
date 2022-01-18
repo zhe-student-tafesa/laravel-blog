@@ -22,17 +22,37 @@
         <nav class="topnav" id="topnav">
             <!-- $v->nav_name 使用对象 变量 -->
             @foreach($navs as $k=>$v)
-<a href="{{$v->nav_url}}"><span>{{$v->nav_name}}</span><span class="en">{{$v->nav_alias}}</span></a>@endforeach
-            
+            <a href="{{$v->nav_url}}"><span>{{$v->nav_name}}</span><span class="en">{{$v->nav_alias}}</span></a>@endforeach
+
         </nav>
     </header>
 
-    @yield('content');
+    @section('content');
+
+    <h3>
+        <p>最新<span>文章</span></p>
+    </h3>
+    <ul class="rank">
+        @foreach($hotNewList8 as $k=>$v)
+        <li><a href="{{url('a/'.$v->art_id)}}" title="{{$v->art_title}}" target="_blank">{{$v->art_title}}</a></li>
+        @endforeach
+
+    </ul>
+    <h3 class="ph">
+        <p>点击<span>排行</span></p>
+    </h3>
+    <ul class="paih">
+        @foreach($hotArticle5 as $k=>$v)
+        <li><a href="{{url('a/'.$v->art_id)}}" title="{{$v->art_title}}" target="_blank">"{{$v->art_title}}"</a></li>
+        @endforeach
+
+    </ul>
+    @show
 
     <footer>
-        <p>Design by 陈华编程社区 <a href="http://www.miitbeian.gov.cn/" target="_blank">http://www.chenhua.club</a> <a href="/">网站统计</a></p>
+        <p>{!!Config::get('web.copyright')!!} {!!Config::get('web.web_count')!!}</p>
     </footer>
-    
+
 </body>
 
 </html>

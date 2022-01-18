@@ -258,5 +258,5 @@ Route::post('admin/uploadimage', [ImageController::class,'uploadFile'])->name('u
 
 //前台 frontend
 Route::get('/', [IndexHomeController::class,'index']);
-Route::get('/category', [IndexHomeController::class,'category']);
-Route::get('/article', [IndexHomeController::class,'article']);
+Route::get('/category/{cate_id}', [IndexHomeController::class,'category']);
+Route::get('/a/{art_id}', [IndexHomeController::class,'article']);

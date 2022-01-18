@@ -38,6 +38,11 @@ class LoginController extends CommonController
             }
             $inputName=$request->post()["user_name"];
             $inputPassEn=  $request->post()["user_password"] ;
+            
+            // //20220118开始
+            // dd(encrypt($inputPassEn));  //);encrypt($inputPassEn);
+            // //j结束
+
 
 
             $users = DB::table('user')->where('user_id', 1)->first();
